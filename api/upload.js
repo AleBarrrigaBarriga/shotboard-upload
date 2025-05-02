@@ -1,36 +1,33 @@
-import { initializeApp } from "firebase/app"
-import { getStorage, ref, uploadBytes } from "firebase/storage"
+import { v2 as cloudinary } from 'cloudinary';
 
-const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID
-}
-
-const app = initializeApp(firebaseConfig)
-const storage = getStorage(app)
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Only POST allowed" })
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Only POST requests are allowed' });
   }
 
-  const { image } = req.body
+  const { image } = req.body;
 
   if (!image) {
-    return res.status(400).json({ error: "Missing image in body" })
+    return res.status(400).json({ error: 'Missing image in body' });
   }
 
   try {
-    const buffer = Buffer.from(image, "base64")
-    const filename = `captura-${Date.now()}.jpg`
-    const storageRef = ref(storage, `capturas/${filename}`)
-    await uploadBytes(storageRef, buffer)
-    return res.status(200).json({ message: "Upload successful", file: filename })
-  } catch (e) {
-    return res.status(500).json({ error: e.message })
+    const uploadResponse = await cloudinary.uploader.upload(`data:image/jpeg;base64,${image}`, {
+      folder: 'capturas'
+    });
+
+    return res.status(200).json({
+      message: 'Upload successful',
+      url: uploadResponse.secure_url,
+      public_id: uploadResponse.public_id
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
 }
