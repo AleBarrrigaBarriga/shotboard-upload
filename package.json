@@ -2,7 +2,9 @@
   "name": "shotboard-upload",
   "version": "1.0.0",
   "type": "module",
+  "description": "Serverless function to upload screenshots to Cloudinary",
+  "main": "api/upload.js",
   "dependencies": {
-    "firebase": "^10.7.0"
+    "cloudinary": "^1.37.1"
   }
 }
