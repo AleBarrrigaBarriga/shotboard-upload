@@ -4,6 +4,11 @@
   "type": "module",
   "main": "api/upload.js",
   "dependencies": {
+<<<<<<< HEAD
     "cloudinary": "^1.37.1"
+=======
+    "cloudinary": "^2.6.0",
+    "firebase": "^10.7.0"
+>>>>>>> a01b594 (Add cloudinary dependency)
   }
 }
