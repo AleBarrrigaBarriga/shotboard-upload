@@ -3,5 +3,8 @@
     "api/upload.js": {
       "runtime": "nodejs18.x"
     }
-  }
+  },
+  "builds": [
+    { "src": "api/upload.js", "use": "@vercel/node" }
+  ]
 }
